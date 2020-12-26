@@ -4,7 +4,9 @@ Kelompok A14:
 * _Vachri Attala Putra (0511184000043)_
 
 #### Soal A
-Topologi
+Menentukan jumlah dan ukuran subnet
+
+Menentukan Alamat IP untuk tiap subnet
 
 #### Soal B
 Topologi
