@@ -4,9 +4,14 @@ Kelompok A14:
 * _Vachri Attala Putra (0511184000043)_
 
 #### Soal A
-Menentukan jumlah dan ukuran subnet
-
-Menentukan Alamat IP untuk tiap subnet
+**Menentukan jumlah dan ukuran subnet**  
+![alt text](/img/subnet2.jpg)  
+**Membagi subnet dalam topologi**  
+![alt text](/img/subnet1.jpg)  
+**Tree**  
+![alt text](/img/subnet3.jpg)  
+**Menentukan Alamat IP untuk tiap subnet**  
+![alt text](/img/subnet.PNG)
 
 #### Soal B
 Topologi
