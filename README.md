@@ -14,10 +14,165 @@ Kelompok A14:
 ![alt text](/img/subnet.PNG)
 
 #### Soal B
-Topologi
+**Topologi Dalam UML**  
+**Topologi.sh**  
+```
+# Switch
+uml_switch -unix switch1 > /dev/null < /dev/null &
+uml_switch -unix switch2 > /dev/null < /dev/null &
+uml_switch -unix switch3 > /dev/null < /dev/null &
+uml_switch -unix switch4 > /dev/null < /dev/null &
+uml_switch -unix switch5 > /dev/null < /dev/null &
+uml_switch -unix switch6 > /dev/null < /dev/null &
+
+# Router
+xterm -T SURABAYA -e linux ubd0=SURABAYA,jarkom umid=SURABAYA eth0=tuntap,,,10.151.72.61 eth1=daemon,,,switch4 eth2=daemon,,,switch3 mem=64M &
+xterm -T BATU -e linux ubd0=BATU,jarkom umid=BATU eth0=daemon,,,switch3 eth1=daemon,,,switch2 eth2=daemon,,,switch1 mem=64M &
+xterm -T KEDIRI -e linux ubd0=KEDIRI,jarkom umid=KEDIRI eth0=daemon,,,switch4 eth1=daemon,,,switch6 eth2=daemon,,,switch5 mem=64M &
+
+# Server
+xterm -T MALANG -e linux ubd0=MALANG,jarkom umid=MALANG eth0=daemon,,,switch1 mem=64M &
+xterm -T MOJOKERTO -e linux ubd0=MOJOKERTO,jarkom umid=MOJOKERTO eth0=daemon,,,switch1 mem=64M &
+xterm -T MADIUN -e linux ubd0=MADIUN,jarkom umid=MADIUN eth0=daemon,,,switch6 mem=64M &
+xterm -T PROBOLINGGO -e linux ubd0=PROBOLINGGO,jarkom umid=PROBOLINGGO eth0=daemon,,,switch6 mem=64M &
+
+# Client
+xterm -T SIDOARJO -e linux ubd0=SIDOARJO,jarkom umid=SIDOARJO eth0=daemon,,,switch2 mem=64M &
+xterm -T GRESIK -e linux ubd0=GRESIK,jarkom umid=GRESIK eth0=daemon,,,switch5 mem=64M &
+
+```
+
+**Setting interface**  
+```
+[Interface]
+
+[MADIUN]
+
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.11
+netmask 255.255.255.248
+gateway 192.168.0.9
+
+[PROBOLINGGO]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.10
+netmask 255.255.255.248
+gateway 192.168.0.9
+
+[GRESIK]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.2.2
+netmask 255.255.255.0
+gateway 192.168.2.1
+
+[SIDOARJO]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.1.2
+netmask 255.255.255.0
+gateway 192.168.1.1
+
+[MALANG]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 10.151.73.124
+netmask 255.255.255.248
+gateway 10.151.73.126
+
+[MOJOKERTO]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 10.151.73.125
+netmask 255.255.255.248
+gateway 10.151.73.126
+
+[BATU]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.2
+netmask 255.255.255.252
+gateway 192.168.0.1
+
+auto eth1
+iface eth1 inet static
+address 192.168.1.1
+netmask 255.255.255.0
+
+auto eth2
+iface eth2 inet static
+address 10.151.73.126
+netmask 255.255.255.248
+
+[KEDIRI]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.6
+netmask 255.255.255.252
+gateway 192.168.0.5
+
+auto eth1
+iface eth1 inet static
+address 192.168.0.9
+netmask 255.255.255.248
+
+auto eth2
+iface eth2 inet static
+address 192.168.2.1
+netmask 255.255.255.0
+
+[SURABAYA]
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 10.151.72.62
+netmask 255.255.255.252
+gateway 10.151.72.61
+
+auto eth1
+iface eth1 inet static
+address 192.168.0.5
+netmask 255.255.255.252
+
+auto eth2
+iface eth2 inet static
+address 192.168.0.2
+netmask 255.255.255.252
+```
 
 #### Soal C
-Routing
+**Routing**  
+![alt text](/img/c1.PNG)  
+![alt text](/img/c2.PNG)  
+![alt text](/img/c3.PNG)  
 
 #### Soal D
 Memberikan IP dinamis pada subnet Sidoarjo dan Gresik
