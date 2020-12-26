@@ -177,34 +177,102 @@ netmask 255.255.255.252
 #### Soal D
 Memberikan IP dinamis pada subnet Sidoarjo dan Gresik
 
+* Install dhcp server pada MOJOKERTO dan lakukan config DHCP  
+```
+subnet 192.168.1.0 netmask 255.255.255.0 {
+        range 192.168.1.2 192.168.1.202;
+        option routers 192.168.1.1;
+        option broadcast-address 192.168.1.255;
+        option domain-name-servers 10.151.73.124;
+        default-lease-time 600;
+        max-lease-time 7200;
+}
+
+subnet 192.168.2.0 netmask 255.255.255.0 {
+        range 192.168.2.2 192.168.2.212;
+        option routers 192.168.2.1;
+        option broadcast-address 192.168.2.255;
+        option domain-name-servers 10.151.73.124;
+        default-lease-time 600;
+        max-lease-time 7200;
+}
+
+subnet 10.151.73.120 netmask 255.255.255.248 {
+        option routers 10.151.73.126;
+}
+
+```
+![alt text](/img/dconfigbaru.PNG)  
+![alt text](/img/dconfigbaru2.PNG)  
+
+* Install dan atur relay pada BATU, SURABAYA, dan KEDIRI  
+
+![alt text](/img/d3.PNG)  
+![alt text](/img/d4.PNG)  
+![alt text](/img/d5.PNG)  
+
+* Atur interface pada client agar bisa mendapatkan ip dinamis
+
+![alt text](/img/d1.PNG)  
+![alt text](/img/d2.PNG)  
+
 #### Soal 1
 Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi
 SURABAYA menggunakan iptables, namun Bibah tidak ingin kalian menggunakan
 MASQUERADE.
-
+```
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to 10.151.72.62
+```  
 
 #### Soal 2
 Kalian diminta untuk mendrop semua akses SSH dari luar Topologi (UML) Kalian pada server
 yang memiliki ip DMZ (DHCP dan DNS SERVER) pada SURABAYA demi menjaga keamanan.
+```
+iptables -N LOGGING
+iptables -A FORWARD -d 10.151.73.120/29 -i eth0 -p tcp --dport 22 -j LOGGING
+iptables -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+iptables -A LOGGING -j DROP
+```  
+Sebelum paket di drop, paket di log terlebih dahulu melalui chain LOGGING (Soal no 7)  
 
 #### Soal 3
 Bibah meminta kalian untuk membatasi DHCP
 dan DNS server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan yang berasal dari
 mana saja menggunakan iptables pada masing masing server, selebihnya akan di DROP.
+```
+iptables -N LOGGING
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -j LOGGING
+iptables -A LOGGING -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+iptables -A LOGGING -j DROP
+```  
+Sebelum paket di drop, paket di log terlebih dahulu melalui chain LOGGING (Soal no 7)  
 
 #### Soal 4
 Akses dari subnet SIDOARJO hanya diperbolehkan pada pukul 07.00 - 17.00 pada hari Senin
 sampai Jumat.
+```
+iptables -A INPUT -s 192.168.1.0/24 -m time --timestart 07:00 --timestop 17:00 --weekdays Mon,Tue,Wed,Thu,Fri -j ACCEPT
+iptables -A INPUT -s 192.168.1.0/24 -j REJECT
+```  
 
 #### Soal 5
 Akses dari subnet GRESIK hanya diperbolehkan pada pukul 17.00 hingga pukul 07.00 setiap
 harinya.
+```
+iptables -A INPUT -s 192.168.2.0/24 -m time --timestart 07:00 --timestop 17:00 -j REJECT
+```  
 
 #### Soal 6
 Bibah ingin SURABAYA disetting sehingga setiap
 request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada
 PROBOLINGGO port 80 dan MADIUN port 80.
-
+```
+#probolinggo
+iptables -t nat -A PREROUTING -p tcp -d 10.151.73.124 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 192.168.0.10:80
+#madiun
+iptables -t nat -A PREROUTING -p tcp -d 10.151.73.124 -j DNAT --to-destination 192.168.0.11:80
+```  
 #### Soal 7
 Bibah ingin agar semua paket didrop oleh firewall (dalam topologi) tercatat dalam log pada setiap
-UML yang memiliki aturan drop.
+UML yang memiliki aturan drop.  
+Pada semua paket yang di drop, paket di masukkan ke chain "LOGGING" terlebih dahulu. Pada chain tersebut paket akan di log kedalam sistem kemudian paket baru akan di drop
