@@ -276,3 +276,12 @@ iptables -t nat -A PREROUTING -p tcp -d 10.151.73.124 -j DNAT --to-destination 1
 Bibah ingin agar semua paket didrop oleh firewall (dalam topologi) tercatat dalam log pada setiap
 UML yang memiliki aturan drop.  
 Pada semua paket yang di drop, paket di masukkan ke chain "LOGGING" terlebih dahulu. Pada chain tersebut paket akan di log kedalam sistem kemudian paket baru akan di drop
+
+Pada UML yang mengandung perintah iptables DROP yaitu pada UML **MALANG, MOJOKERTO, dan SURABAYA** dimasukkan perintah sebagai berikut:
+
+```
+iptables -N LOGGING
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -j LOGGING
+iptables -A LOGGING -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+iptables -A LOGGING -j DROP
+```
