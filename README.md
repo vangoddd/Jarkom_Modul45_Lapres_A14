@@ -279,6 +279,15 @@ Pada semua paket yang di drop, paket di masukkan ke chain "LOGGING" terlebih dah
 
 Pada UML yang mengandung perintah iptables DROP yaitu pada UML **MALANG, MOJOKERTO, dan SURABAYA** dimasukkan perintah sebagai berikut:
 
+**SURABAYA**
+```
+iptables -N LOGGING
+iptables -A FORWARD -p tcp --dport 22 -d 10.151.79.64/29 -i eth0 -j LOGGING
+iptables -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+iptables -A LOGGING -j DROP
+```
+
+**MALANG dan MOJOKERTO**
 ```
 iptables -N LOGGING
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -j LOGGING
