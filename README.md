@@ -259,7 +259,7 @@ iptables -A INPUT -s 192.168.1.0/24 -j REJECT
 Akses dari subnet GRESIK hanya diperbolehkan pada pukul 17.00 hingga pukul 07.00 setiap
 harinya.
 ```
-iptables -A INPUT -s 192.168.2.0/24 -m time --timestart 07:00 --timestop 17:00 -j REJECT
+iptables -A INPUT -s 192.168.2.0/24 -m time --timestart 07:01 --timestop 16:59 -j REJECT
 ```  
 
 #### Soal 6
@@ -290,7 +290,14 @@ iptables -A LOGGING -j DROP
 **MALANG dan MOJOKERTO**
 ```
 iptables -N LOGGING
-iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -j LOGGING
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -connlimit-mask 0 -j LOGGING
 iptables -A LOGGING -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
 iptables -A LOGGING -j DROP
 ```
+
+# Referensi Tambahan :
+- https://scalingo.com/blog/iptables
+- https://www.thegeekstuff.com/2012/08/iptables-log-packets/
+
+# Hambatan :
+- kesulitan melakukan testing beberapa rules iptables
